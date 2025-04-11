@@ -20,6 +20,9 @@ class Table(BASE):
 
     reservation: Mapped["Reservation"] = relationship("Reservation", back_populates="table")
 
+    def __repr__(self):
+        return f'{self.name}, {self.seats}, {self.location}'
+
 
 class Reservation(BASE):
 
@@ -32,4 +35,7 @@ class Reservation(BASE):
     duration_minutes: Mapped[int]
 
     table: Mapped["Table"] = relationship("Table", back_populates="reservation")
+
+    def __repr__(self):
+        return f'{self.customer}. {self.table_id}, {self.reservation_time}, {self.duration_minutes}'
 
