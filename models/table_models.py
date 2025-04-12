@@ -3,11 +3,11 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 
 
-class BASE(DeclarativeBase):
+class Base(DeclarativeBase):
     pass
 
 
-class Table(BASE):
+class Table(Base):
 
     __tablename__  = "table"
 
@@ -22,10 +22,10 @@ class Table(BASE):
     )
 
     def __repr__(self):
-        return f'{self.name}, {self.seats}, {self.location}'
+        return f'{self.id}, {self.name}, {self.seats}, {self.location}'
 
 
-class Reservation(BASE):
+class Reservation(Base):
 
     __tablename__ = "reservation"
 
