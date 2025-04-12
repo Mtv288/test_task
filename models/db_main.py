@@ -7,7 +7,6 @@ from models.table_models import Base
 
 load_dotenv()
 
-# Получаем переменные из .env
 DATABASE_URL = os.getenv("DATABASE_URL")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -24,7 +23,6 @@ async_session = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
 
-# Функция для создания базы данных
 async def create_database():
     conn = await asyncpg.connect(
         user=DB_USER,
@@ -40,7 +38,6 @@ async def create_database():
     if result:
         print(f"База данных '{DB_NAME}' уже существует.")
     else:
-        # Если базы нет, создаем её
         await conn.execute(f"CREATE DATABASE {DB_NAME}")
         print(f"База данных '{DB_NAME}' была успешно создана.")
 
@@ -50,7 +47,7 @@ async def create_database():
 async def create_tables():
     try:
         async with engine.begin() as conn:
-            result = await conn.run_sync(lambda conn: conn.dialect.has_table(conn, "table"))  # Используем dialect с движком
+            result = await conn.run_sync(lambda conn: conn.dialect.has_table(conn, "table"))
             if not result:
                 await conn.run_sync(Base.metadata.create_all)
                 print("Таблицы успешно созданы.")
