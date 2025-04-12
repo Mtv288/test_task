@@ -1,9 +1,10 @@
+import asyncpg
 import os
 from dotenv import load_dotenv
-import asyncpg
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from models.table_models import Base
+from contextlib import asynccontextmanager
 
 load_dotenv()
 
@@ -18,10 +19,10 @@ DEFAULT_DB = os.getenv("DEFAULT_DB", "postgres")
 
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
-
 async_session = sessionmaker(
     engine, class_=AsyncSession, expire_on_commit=False
 )
+
 
 async def create_database():
     conn = await asyncpg.connect(
@@ -32,7 +33,6 @@ async def create_database():
         port=DB_PORT
     )
 
-
     result = await conn.fetch(f"SELECT 1 FROM pg_catalog.pg_database WHERE datname = '{DB_NAME}'")
 
     if result:
@@ -42,6 +42,12 @@ async def create_database():
         print(f"База данных '{DB_NAME}' была успешно создана.")
 
     await conn.close()
+
+
+@asynccontextmanager
+async def get_db():
+    async with async_session() as session:
+        yield session
 
 
 async def create_tables():
@@ -55,3 +61,4 @@ async def create_tables():
                 print("Таблицы уже существуют. Создание пропущено.")
     except Exception as e:
         print(f"Ошибка при создании таблиц: {e}")
+
