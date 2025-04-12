@@ -1,7 +1,13 @@
 import logging
 from fastapi import FastAPI
+from pygments.lexers import templates
 from starlette.requests import Request
 from contextlib import asynccontextmanager
+
+from starlette.responses import HTMLResponse
+from starlette.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
+
 from models.db_main import create_database, create_tables
 
 
@@ -37,10 +43,14 @@ async def log_request(request: Request, call_next):
     return response
 
 
-@app.get("/")
-async def read_root():
-    return {"message": "Привет, поехали))"}
+templates = Jinja2Templates(directory="templates")
 
+# Подключаем статику (css и т.д.)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 if __name__ == "__main__":
     import uvicorn
