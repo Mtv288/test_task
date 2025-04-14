@@ -1,6 +1,5 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 from models.table_models import Table
 from models.pydentic_model import ResponseTable, GreatTable
 
@@ -25,3 +24,12 @@ class TableService:
         await db.refresh(new_table)
 
         return GreatTable.from_orm(new_table)
+
+    @staticmethod
+    async def delete_table(db: AsyncSession, table_id: int) -> GreatTable:
+        table = await db.get(Table, table_id)
+        if table:
+            await db.delete(table)
+            await db.commit()
+            return GreatTable.from_orm(table)
+        return None

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Удалить столик</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Удалить столик</h1>
+    <button class="button" onclick="location.href='/tables'">Список всех столиков</button>
+
+    <h2>Список всех столов для удаления</h2>
+    {% if tables %}
+        <ul>
+        {% for table in tables %}
+            <li>
+                {{ table.name }} - {{ table.seats }} мест - {{ table.location }}
+                <form action="/tables/delete/{{ table.id }}" method="post" style="display:inline;">
+                    <button type="submit" class="button">Удалить</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет столов для удаления.</p>
+    {% endif %}
+
+</body>
+</html>

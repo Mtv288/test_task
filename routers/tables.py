@@ -28,8 +28,24 @@ async def create_table(
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        # Создание нового стола с переданными данными из формы
         table_data = ResponseTable(name=name, seats=seats, location=location)
         return await TableService.create_table(db=db, table_data=table_data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating table: {e}")
+
+@router.get("/tables/delete", response_class=HTMLResponse)
+async def show_delete_table_form(request: Request, db: AsyncSession = Depends(get_db)):
+    tables = await TableService.get_all_tables(db)
+    return templates.TemplateResponse("delete_tables.html", {"request": request, "tables": tables})
+
+# Роут для обработки удаления стола
+@router.post("/tables/delete/{table_id}", response_model=GreatTable)
+async def delete_table(
+    table_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    table = await TableService.delete_table(db=db, table_id=table_id)
+    if table:
+        return table
+    else:
+        raise HTTPException(status_code=404, detail="Table not found")
