@@ -2,7 +2,6 @@ import logging
 from fastapi import FastAPI
 from pygments.lexers import templates
 from starlette.requests import Request
-from contextlib import asynccontextmanager
 from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates

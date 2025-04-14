@@ -29,3 +29,13 @@ class ReservingService:
         await db.refresh(new_reservation)
 
         return ReservationGreat.from_orm(new_reservation)
+
+    @staticmethod
+    async def delete_reservation(db: AsyncSession, reservation_id: int) -> ReservationGreat | None:
+        reservation = await db.get(Reservation, reservation_id)
+        if reservation:
+            await db.delete(reservation)
+            await db.commit()
+            return ReservationGreat.from_orm(reservation)
+        return None
+

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Удаление брони</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Удалить бронь</h1>
+    {% if reservations %}
+        <ul>
+            {% for res in reservations %}
+                <li>
+                    {{ res.customer }} – {{ res.reservation_time }} – {{ res.duration_minutes }} мин.
+                    <form action="/reservations/delete/{{ res.id }}" method="post" style="display:inline;">
+                        <button type="submit">Удалить</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет доступных броней для удаления.</p>
+    {% endif %}
+    <br>
+    <button onclick="location.href='/'">На главную</button>
+</body>
+</html>

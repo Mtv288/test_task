@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends, Request, Form, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 from models.pydentic_model import ReservationGreat, ReservationResponse
 from models.db_main import get_db
@@ -41,3 +41,20 @@ async def create_reservation(
         return await ReservingService.create_reservation(db, reservation_data, table_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Ошибка при создании брони: {e}")
+
+
+@router.get("/reservations/delete", response_class=HTMLResponse)
+async def show_delete_reservation_page(request: Request, db: AsyncSession = Depends(get_db)):
+    reservations = await ReservingService.get_all_reserving(db)
+    return templates.TemplateResponse("delete_reservation.html", {
+        "request": request,
+        "reservations": reservations
+    })
+
+
+@router.post("/reservations/delete/{reservation_id}")
+async def delete_reservation(reservation_id: int, db: AsyncSession = Depends(get_db)):
+    deleted = await ReservingService.delete_reservation(db, reservation_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Бронь не найдена")
+    return RedirectResponse(url="/reservations/delete", status_code=303)
