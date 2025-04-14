@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Form, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
-
 from models.pydentic_model import GreatTable, ResponseTable
 from models.db_main import get_db
 from servises.tables import TableService
@@ -38,7 +36,7 @@ async def show_delete_table_form(request: Request, db: AsyncSession = Depends(ge
     tables = await TableService.get_all_tables(db)
     return templates.TemplateResponse("delete_tables.html", {"request": request, "tables": tables})
 
-# Роут для обработки удаления стола
+
 @router.post("/tables/delete/{table_id}", response_model=GreatTable)
 async def delete_table(
     table_id: int,

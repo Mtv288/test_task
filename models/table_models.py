@@ -14,7 +14,6 @@ class Table(Base):
     seats: Mapped[int]
     location: Mapped[str]
 
-    # Связь с Reservation, каскадное удаление настроено на стороне "одного" (Table)
     reservation: Mapped["Reservation"] = relationship(
         "Reservation", back_populates="table", cascade="all, delete-orphan"
     )
@@ -32,7 +31,6 @@ class Reservation(Base):
     reservation_time: Mapped[datetime]
     duration_minutes: Mapped[int]
 
-    # Связь с Table, на стороне "многих" не должно быть каскадного удаления
     table: Mapped["Table"] = relationship(
         "Table", back_populates="reservation", single_parent=True
     )

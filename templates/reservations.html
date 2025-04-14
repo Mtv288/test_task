@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание брони</title>
+</head>
+<body>
+    <h1>Создать новую бронь</h1>
+    <form method="post" action="/reservations/new">
+        <label for="customer_name">Имя клиента:</label>
+        <input type="text" name="customer_name" required><br><br>
+
+        <label for="table_id">ID стола:</label>
+        <input type="number" name="table_id" required><br><br>
+
+        <label for="reservation_time">Время брони (например, 2025-04-14T18:30):</label>
+        <input type="datetime-local" name="reservation_time" required><br><br>
+
+        <button type="submit">Создать</button>
+    </form>
+</body>
+</html>
