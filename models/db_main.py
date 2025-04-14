@@ -4,10 +4,10 @@ from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from models.table_models import Base
-from contextlib import asynccontextmanager
 
 load_dotenv()
 
+# Переменные окружения
 DATABASE_URL = os.getenv("DATABASE_URL")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -16,19 +16,27 @@ DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 DEFAULT_DB = os.getenv("DEFAULT_DB", "postgres")
 
-
+# Создание асинхронного движка
 engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 
-async_session = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
+# Создание sessionmaker на основе движка
+async_session_maker = sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False
 )
 
+# Получение сессии через Depends
+async def get_db() -> AsyncSession:
+    async with async_session_maker() as session:
+        yield session
 
+# Создание базы данных, если не существует
 async def create_database():
     conn = await asyncpg.connect(
         user=DB_USER,
         password=DB_PASSWORD,
-        database="postgres",
+        database=DEFAULT_DB,
         host=DB_HOST,
         port=DB_PORT
     )
@@ -38,27 +46,16 @@ async def create_database():
     if result:
         print(f"База данных '{DB_NAME}' уже существует.")
     else:
-        await conn.execute(f"CREATE DATABASE {DB_NAME}")
+        await conn.execute(f'CREATE DATABASE "{DB_NAME}"')
         print(f"База данных '{DB_NAME}' была успешно создана.")
 
     await conn.close()
 
-
-@asynccontextmanager
-async def get_db():
-    async with async_session() as session:
-        yield session
-
-
+# Создание всех таблиц на основе моделей
 async def create_tables():
     try:
         async with engine.begin() as conn:
-            result = await conn.run_sync(lambda conn: conn.dialect.has_table(conn, "table"))
-            if not result:
-                await conn.run_sync(Base.metadata.create_all)
-                print("Таблицы успешно созданы.")
-            else:
-                print("Таблицы уже существуют. Создание пропущено.")
+            await conn.run_sync(Base.metadata.create_all)
+            print("Таблицы успешно созданы.")
     except Exception as e:
         print(f"Ошибка при создании таблиц: {e}")
-

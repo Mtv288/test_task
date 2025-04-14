@@ -7,6 +7,7 @@ from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from models.db_main import create_database, create_tables
+from routers import tables
 
 
 logging.basicConfig(
@@ -20,7 +21,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
 logger = logging.getLogger("app")
 
 
-@asynccontextmanager
+
 async def lifespan(app: FastAPI):
     logger.info("Startup event triggered")
     await create_database()
@@ -30,6 +31,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(tables.router)
 
 
 @app.middleware("http")
