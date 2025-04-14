@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание нового столика</title>
+</head>
+<body>
+    <h1>Создание нового столика</h1>
+    <form action="/tables/new" method="post">
+        <div>
+            <label for="name">Название:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+        </div>
+
+        <div>
+            <label for="seats">Количество мест:</label><br>
+            <input type="number" id="seats" name="seats" required><br><br>
+        </div>
+
+        <div>
+            <label for="location">Локация:</label><br>
+            <input type="text" id="location" name="location" required><br><br>
+        </div>
+
+        <div>
+            <button type="submit">Создать столик</button>
+        </div>
+    </form>
+</body>
+</html>

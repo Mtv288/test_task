@@ -10,6 +10,7 @@ class GreatTable(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 
 class ResponseTable(BaseModel):
@@ -19,6 +20,7 @@ class ResponseTable(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 
 class ReservationGreat(BaseModel):
@@ -29,6 +31,7 @@ class ReservationGreat(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 
 class ReservationResponse(BaseModel):
@@ -38,4 +41,5 @@ class ReservationResponse(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
