@@ -3,11 +3,9 @@ from fastapi import FastAPI
 from pygments.lexers import templates
 from starlette.requests import Request
 from contextlib import asynccontextmanager
-
 from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-
 from models.db_main import create_database, create_tables
 
 
@@ -19,7 +17,6 @@ logging.basicConfig(
 
 
 logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
-
 logger = logging.getLogger("app")
 
 
@@ -45,7 +42,6 @@ async def log_request(request: Request, call_next):
 
 templates = Jinja2Templates(directory="templates")
 
-# Подключаем статику (css и т.д.)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
